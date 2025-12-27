@@ -1,0 +1,277 @@
+{
+  "info": {
+    "name": "AI Photo Backend API",
+    "description": "AI 照片生成后端 API 接口集合",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000/api",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "taskId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "用户相关",
+      "item": [
+        {
+          "name": "用户登录",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const jsonData = pm.response.json();",
+                  "    if (jsonData.code === 0 && jsonData.data.token) {",
+                  "        pm.collectionVariables.set('token', jsonData.data.token);",
+                  "        console.log('Token 已保存:', jsonData.data.token);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"test_wx_code_123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/user/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["user", "login"]
+            }
+          }
+        },
+        {
+          "name": "获取用户积分",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/user/points",
+              "host": ["{{baseUrl}}"],
+              "path": ["user", "points"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "照片相关",
+      "item": [
+        {
+          "name": "上传照片",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": ""
+                },
+                {
+                  "key": "type",
+                  "value": "portrait",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/photo/upload",
+              "host": ["{{baseUrl}}"],
+              "path": ["photo", "upload"]
+            }
+          }
+        },
+        {
+          "name": "生成魔法照片",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const jsonData = pm.response.json();",
+                  "    if (jsonData.code === 0 && jsonData.data.taskId) {",
+                  "        pm.collectionVariables.set('taskId', jsonData.data.taskId);",
+                  "        console.log('TaskId 已保存:', jsonData.data.taskId);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"photoUrl\": \"https://cdn.example.com/photos/test123.jpg\",\n  \"prompt\": \"宇宙星际者古风城小机娘，坐在开满彼岸花的宫殿式花园中，阳光洒落\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/photo/generate",
+              "host": ["{{baseUrl}}"],
+              "path": ["photo", "generate"]
+            }
+          }
+        },
+        {
+          "name": "查询生成状态",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/photo/status?taskId={{taskId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["photo", "status"],
+              "query": [
+                {
+                  "key": "taskId",
+                  "value": "{{taskId}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "获取生成结果",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/photo/result?taskId={{taskId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["photo", "result"],
+              "query": [
+                {
+                  "key": "taskId",
+                  "value": "{{taskId}}"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "作品展厅",
+      "item": [
+        {
+          "name": "获取作品列表",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/gallery/list?page=1&pageSize=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["gallery", "list"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "pageSize",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "获取作品详情",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/gallery/detail?id=photo_001",
+              "host": ["{{baseUrl}}"],
+              "path": ["gallery", "detail"],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "photo_001"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "健康检查",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:3000/health",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["health"]
+        }
+      }
+    }
+  ]
+}

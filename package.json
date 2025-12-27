@@ -1,0 +1,33 @@
+{
+  "name": "ai-photo-backend",
+  "version": "1.0.0",
+  "description": "AI Photo Generation Backend API",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js",
+    "test": "node test/test.js",
+    "test:quick": "chmod +x quick_test.sh && ./quick_test.sh",
+    "test:all": "chmod +x run_all.sh && ./run_all.sh",
+    "test:gemini": "node test_gemini.js"
+  },
+  "keywords": [
+    "ai",
+    "photo",
+    "api"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@google/generative-ai": "^0.21.0",
+    "axios": "^1.6.5",
+    "cors": "^2.8.5",
+    "express": "^4.22.1",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^1.4.5-lts.1",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  }
+}
